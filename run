@@ -1,0 +1,57 @@
+#!/bin/bash -xe
+
+#######################################################################
+# This script generates the lambda package (zip) and deploys the entire
+# infrastructure using Pulumi.
+# Resources created: lambda, step function, and event rules
+#######################################################################
+
+SCRIPT_NAME=$(basename "$0")
+
+function log() {
+  local readonly LEVEL="$1"
+  local readonly MSG="$2"
+
+  echo "${SCRIPT_NAME}: [${LEVEL}] ${MSG}"
+}
+
+function log_info() {
+  local readonly MSG="$1"
+  log "INFO" "${MSG}"
+}
+
+# https://docs.aws.amazon.com/lambda/latest/dg/python-package.html#python-package-create-package-with-dependency
+function create_lambda_package() {
+  log_info "Installing all lambda dependencies in a folder..."
+  pip install --target ./package -r ./lambda/requirements.txt
+  log_info "Lambda function dependencies installed"
+
+  log_info "Generating lambda package zip file..."
+  cd package
+  zip -r ../package.zip .
+  cd ../lambda
+  zip -g ../package.zip lambda_function.py
+  cd ..
+  log_info "Lambda package file generated"
+}
+
+function cleanup() {
+  log_info "Cleaning up lambda package..."
+  rm -rf ./package
+  rm package.zip
+  log_info "Lambda package cleaned up"
+}
+
+function deploy_infra() {
+  log_info "Deploying infrastructure"
+  pulumi up -s dev -y
+  log_info "Infrastructure deployed"
+}
+
+function main() {
+  create_lambda_package
+  deploy_infra
+  cleanup
+}
+
+main "$@"
