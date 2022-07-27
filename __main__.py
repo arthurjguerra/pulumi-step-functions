@@ -138,7 +138,7 @@ def create_event_rule(step_function, er_role):
         name='pulumi-step-functions',
         resource_name='pulumi-step-functions-',
         description='Pulumi Step Functions',
-        schedule_expression='30 10 ? * MON-FRI *',
+        schedule_expression='cron(30 10 * * ? *)',
         tags={
             'pulumi': True
         },

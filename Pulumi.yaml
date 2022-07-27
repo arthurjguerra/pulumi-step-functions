@@ -1,6 +1,4 @@
 name: pulumi-step-functions
 runtime:
   name: python
-  options:
-    virtualenv: pyenv
 description: Deploy Step Functions using Pulumi
