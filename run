@@ -55,19 +55,9 @@ function delete_infra() {
 }
 
 function main() {
-  local option="$1"
-
-  case option in
-    --delete)
-      delete_infra
-      ;;
-
-    *)
-      create_lambda_package
-      deploy_infra
-      cleanup
-      ;;
-  esac
+  create_lambda_package
+  deploy_infra
+  cleanup
 }
 
 main "$@"

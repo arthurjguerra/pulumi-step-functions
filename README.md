@@ -59,3 +59,9 @@ will be used by the step function
 - Lambda function: function that prints a message in the output
 - Step Function: function that will trigger Lambda based on a schedule
 - Even Rule: (cron) schedule that will trigger the step function
+
+## Deleting Infra
+To delete the infra, run:
+```shell
+pulumi down
+```
