@@ -4,17 +4,10 @@ import json
 import logging
 
 import pulumi
-import yaml
 import pulumi_aws as aws
-from pulumi_aws.sfn import StateMachineLoggingConfigurationArgs
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-CLUSTER_OPERATION_TYPE = [
-    'update',
-    'delete'
-]
 
 
 def create_lambda_iam_role():
@@ -240,16 +233,19 @@ def create_lambda_function(iam_role):
 
 
 if __name__ == "__main__":
-    logging.info('Deploying Lambda...')
+    logging.info('Creating Lambda IAM role')
     lambda_role = create_lambda_iam_role()
+    logging.info('Deploying Lambda')
     lambda_fn = create_lambda_function(lambda_role)
 
     # Step Function depends on the Lambda function to exist
-    logging.info('Deploying Step Function...')
+    logging.info('Creating Step Function IAM role')
     step_fn_role = create_step_function_iam_role(lambda_fn)
+    logging.info('Deploying Step Function')
     step_fn = create_step_function(lambda_fn, step_fn_role)
 
     # The Event Rule depends on the Step Function to exist
-    logging.info('Deploying event rule that will trigger the step function')
+    logging.info('Creating event rule IAM role')
     event_rule_role = create_event_rule_iam_role(step_fn)
+    logging.info('Deploying event rule that will trigger the step function')
     create_event_rule(step_fn, event_rule_role)
