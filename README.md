@@ -4,6 +4,9 @@ For the sake of learning Pulumi, this simple repo will create the following work
 The event rule is triggered based on a crontab, which calls the step function, which calls the Lambda function. The lambda
 function just prints a message to stdout.
 
+## Requirements
+- `pulumi`
+
 ## Environment Setup
 Create a Python virtual env:
 ```shell
